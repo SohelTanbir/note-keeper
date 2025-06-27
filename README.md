@@ -1,1 +1,3 @@
-NoteKeeper is an mobile app to track you daily notes
+## Welcome to NoteKeeper
+
+ NoteKeeper is a mobile app to track your daily notes
