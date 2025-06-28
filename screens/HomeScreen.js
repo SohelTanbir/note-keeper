@@ -22,7 +22,7 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Button title="Add Note" onPress={() => navigation.navigate('AddNote')} />
+            <Button title="New Note" onPress={() => navigation.navigate('AddNote')} />
             <FlatList
                 data={notes}
                 keyExtractor={(item) => item.id}
