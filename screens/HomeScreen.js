@@ -11,6 +11,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import ConfirmActionModal from '../components/Modals/ConfirmModal';
 
 
@@ -108,14 +109,18 @@ export default function HomeScreen({ navigation }) {
                         style={styles.deleteButton}
                         onPress={() => setModalVisible(true)}
                     >
-                        <Text style={styles.deleteButtonText}>🗑 Delete ({selectedNotes.length})</Text>
+                        <Text style={styles.deleteButtonText}>
+
+                            ({selectedNotes.length} items)
+                        </Text>
+                        <Icon name="delete" size={25} color="red" />
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={styles.cancelButton}
                         onPress={cancelSelection}
                     >
-                        <Text style={styles.cancelButtonText}>Cancel</Text>
+                        <Icon name="close" size={25} color="gray" />
                     </TouchableOpacity>
                 </View>
             )}
@@ -155,9 +160,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 10,
+        backgroundColor: '#f8f8f8',
+        padding: 10,
+        flex: 1,
+        position: 'absolute',
+        bottom: 40,
+        left: 0,
+        right: 0,
     },
     deleteButton: {
-        backgroundColor: 'red',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
         padding: 12,
         borderRadius: 8,
         flex: 1,
@@ -165,11 +179,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     deleteButtonText: {
-        color: '#fff',
+        fontSize: 16,
+        color: 'red',
         fontWeight: 'bold',
     },
     cancelButton: {
-        backgroundColor: 'gray',
         padding: 12,
         borderRadius: 8,
         flex: 1,

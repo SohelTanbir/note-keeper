@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Modal, Button, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native'
 
 
 export default function ConfirmActionModal({ modalVisible, setModalVisible, confirmDelete, selectedNotes }) {
