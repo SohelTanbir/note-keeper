@@ -59,8 +59,6 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Button title="New Note" onPress={() => navigation.navigate('AddNote')} />
-
             <FlatList
                 data={notes}
                 keyExtractor={(item) => item.id}
@@ -132,6 +130,15 @@ export default function HomeScreen({ navigation }) {
                 confirmDelete={confirmDelete}
                 selectedNotes={selectedNotes}
             />
+
+            <View style={styles.addNoteButtonContainer}>
+                <TouchableOpacity style={styles.addNoteButton}>
+                    <Icon name="add-circle" size={50} color="#4CAF50"
+                        onPress={() => navigation.navigate('AddNote')}
+                    />
+                </TouchableOpacity>
+
+            </View>
         </SafeAreaView>
     );
 }
@@ -139,6 +146,8 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        padding: 10,
+        backgroundColor: '#f0f0f0',
     },
     noteCard: {
         backgroundColor: '#fff',
@@ -189,4 +198,9 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
     },
+    addNoteButtonContainer: {
+        marginTop: 10,
+        alignItems: 'flex-end',
+    },
+
 });

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 
@@ -9,7 +9,7 @@ export default function AddNoteScreen({ navigation }) {
     const [content, setContent] = useState('');
     const saveNote = async () => {
         try {
-            const newNote = { id:uuid.v4(), title, content };
+            const newNote = { id: uuid.v4(), title, content };
             const existing = await AsyncStorage.getItem('notes');
             const notes = existing ? JSON.parse(existing) : [];
             notes.push(newNote);
@@ -37,7 +37,10 @@ export default function AddNoteScreen({ navigation }) {
                 style={[styles.input, { height: 100 }]}
                 multiline
             />
-            <Button title="Save Note" onPress={saveNote} />
+            <TouchableOpacity style={styles.saveButton} onPress={saveNote}>
+                <Text style={styles.saveButtonText}>Save Note</Text>
+            </TouchableOpacity>
+
         </View>
     );
 }
@@ -49,5 +52,15 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 15,
         borderRadius: 6,
+    },
+    saveButton: {
+        backgroundColor: '#4CAF50',
+        padding: 10,
+        borderRadius: 6,
+        alignItems: 'center',
+    },
+    saveButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
     },
 });
