@@ -6,13 +6,14 @@ import {
     Button,
     StyleSheet,
     TouchableOpacity,
-    Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ConfirmActionModal from '../components/Modals/ConfirmModal';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 
 
@@ -57,7 +58,7 @@ export default function HomeScreen({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Button title="New Note" onPress={() => navigation.navigate('AddNote')} />
 
             <FlatList
@@ -131,21 +132,20 @@ export default function HomeScreen({ navigation }) {
                 confirmDelete={confirmDelete}
                 selectedNotes={selectedNotes}
             />
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
     },
     noteCard: {
         backgroundColor: '#fff',
         flexDirection: 'row',
         alignItems: 'start',
         justifyContent: 'space-between',
-        padding: 15,
+        padding: 20,
         borderRadius: 8,
     },
     title: {
@@ -159,14 +159,9 @@ const styles = StyleSheet.create({
     actions: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 10,
         backgroundColor: '#f8f8f8',
-        padding: 10,
-        flex: 1,
-        position: 'absolute',
-        bottom: 40,
-        left: 0,
-        right: 0,
+        width: '100%',
+
     },
     deleteButton: {
         flexDirection: 'row',
