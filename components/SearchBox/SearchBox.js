@@ -17,7 +17,7 @@ const SearchBox = ({ value, onChange }) => {
             />
             {value.length > 0 && (
                 <TouchableOpacity onPress={() => onChange('')}>
-                    <Ionicons name="close-circle" size={20} color="#999" />
+                    <Ionicons name="close-circle" size={25} color="#999" />
                 </TouchableOpacity>
             )}
         </View>

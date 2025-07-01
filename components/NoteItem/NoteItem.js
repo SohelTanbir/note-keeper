@@ -57,13 +57,17 @@ export default function NoteItem({ notes, setNotes, setModalVisible, isSelection
                                     onPress={() => toggleSelect(item.id)}
                                     style={{ marginRight: 10 }}
                                 />
-
                             )}
-
                         </View>
                     </TouchableOpacity>
                 )}
+                ListEmptyComponent={
+                    <View style={styles.emptyMessageContainer}>
+                        <Text style={styles.emptyMessageText}>No matching notes found.</Text>
+                    </View>
+                }
             />
+
 
             {isSelectionMode && (
                 <View style={styles.actions}>
@@ -137,6 +141,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
+    emptyMessageContainer: {
+        marginTop: 40,
+        alignItems: 'center',
+    },
+    emptyMessageText: {
+        color: '#999',
+        fontSize: 16,
+        fontStyle: 'italic',
+    },
 
 
 });
