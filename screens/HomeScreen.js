@@ -47,11 +47,18 @@ export default function HomeScreen({ navigation }) {
         setSelectedNotes([]);
     };
 
+    // search notes
+    const filteredNotes = notes.filter(note =>
+        note.title.toLowerCase().includes(query.toLowerCase()) ||
+        note.content.toLowerCase().includes(query.toLowerCase())
+
+    );
+
     return (
         <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']} >
             <SearchBox value={query} onChange={setQuery} />
             <NoteItem
-                notes={notes}
+                notes={filteredNotes}
                 setNotes={setNotes}
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
