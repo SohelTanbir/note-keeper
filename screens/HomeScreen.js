@@ -13,6 +13,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ConfirmActionModal from '../components/Modals/ConfirmModal';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SearchBox from '../components/SearchBox/SearchBox';
 
 
 
@@ -22,7 +23,7 @@ export default function HomeScreen({ navigation }) {
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedNotes, setSelectedNotes] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
-
+    const [query, setQuery] = useState('');
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -33,12 +34,14 @@ export default function HomeScreen({ navigation }) {
         if (isFocused) loadNotes();
     }, [isFocused]);
 
+    // Function to toggle selection of notes
     const toggleSelect = (id) => {
         setSelectedNotes((prev) =>
             prev.includes(id) ? prev.filter((n) => n !== id) : [...prev, id]
         );
     };
 
+    // Function to confirm deletion of selected notes
     const confirmDelete = async () => {
         const updatedNotes = notes.filter((note) => !selectedNotes.includes(note.id));
         setNotes(updatedNotes);
@@ -48,19 +51,31 @@ export default function HomeScreen({ navigation }) {
         setModalVisible(false);
     };
 
+    // Function to cancel selection mode
     const cancelSelection = () => {
         setIsSelectionMode(false);
         setSelectedNotes([]);
     };
 
+    // Function to navigate to note details
     const getNoteDetails = (note) => {
         navigation.navigate('NoteDetail', { note });
     };
 
+
+
+    const filteredNotes = notes.filter(note =>
+        note.title.toLowerCase().includes(query.toLowerCase()) ||
+        note.content.toLowerCase().includes(query.toLowerCase())
+    );
+
     return (
         <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']} >
+            <SearchBox value={query} onChange={setQuery} />
+
             <FlatList
                 data={notes}
+                showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <TouchableOpacity
@@ -147,15 +162,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#fff',
     },
     noteCard: {
-        backgroundColor: '#fff',
+        backgroundColor: '#f0f0f0',
         flexDirection: 'row',
-        alignItems: 'start',
         justifyContent: 'space-between',
-        padding: 20,
-        borderRadius: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 16,
+        borderRadius: 4,
     },
     title: {
         fontWeight: 'bold',
