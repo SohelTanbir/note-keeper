@@ -6,7 +6,7 @@ export default function NoteDetailsScreen({ route }) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{note.title}</Text>
-            <Text style={styles.content}>{note.content}</Text>
+            <Text style={styles.content}>{note.description}</Text>
         </View>
     )
 }

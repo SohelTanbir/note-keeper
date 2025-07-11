@@ -50,7 +50,7 @@ export default function HomeScreen({ navigation }) {
     // search notes
     const filteredNotes = notes.filter(note =>
         note.title.toLowerCase().includes(query.toLowerCase()) ||
-        note.content.toLowerCase().includes(query.toLowerCase())
+        note.description.toLowerCase().includes(query.toLowerCase())
 
     );
 

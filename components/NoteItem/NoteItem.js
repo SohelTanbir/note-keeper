@@ -43,7 +43,7 @@ export default function NoteItem({ notes, setNotes, setModalVisible, isSelection
                         <View style={styles.noteCard}>
                             <View>
                                 <Text style={styles.title}>{item.title}</Text>
-                                <Text numberOfLines={2}>{item.content}</Text>
+                                <Text numberOfLines={2}>{item.description}</Text>
                             </View>
                             {isSelectionMode && (
                                 <BouncyCheckbox

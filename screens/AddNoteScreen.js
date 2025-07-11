@@ -1,30 +1,45 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import {
+    View,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity,
+    Text,
+    Alert,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 
-
 export default function AddNoteScreen({ navigation }) {
     const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
+    const [description, setDescription] = useState('');
+
     const saveNote = async () => {
-        if (!title || !content) {
-            Alert.alert("Please fill in both fields.");
+        if (!title || !description) {
+            Alert.alert('Please fill in both fields.');
             return;
         }
         try {
-            const newNote = { id: uuid.v4(), title, content };
+            const newNote = { id: uuid.v4(), title, description };
             const existing = await AsyncStorage.getItem('notes');
             const notes = existing ? JSON.parse(existing) : [];
             notes.push(newNote);
             await AsyncStorage.setItem('notes', JSON.stringify(notes));
-            console.log("Note saved.");
             navigation.goBack();
         } catch (err) {
-            console.error("Saving note failed", err);
+            console.error('Saving note failed', err);
         }
     };
 
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity onPress={saveNote}>
+                    <Text style={styles.saveButtonText}>Save</Text>
+                </TouchableOpacity>
+            ),
+        });
+    }, [navigation, title, description]);
 
     return (
         <View style={styles.container}>
@@ -36,27 +51,24 @@ export default function AddNoteScreen({ navigation }) {
             />
             <TextInput
                 placeholder="Note something down"
-                value={content}
-                onChangeText={setContent}
+                value={description}
+                onChangeText={setDescription}
                 style={styles.inputContent}
                 multiline
             />
-            <TouchableOpacity style={styles.saveButton} onPress={saveNote}>
-                <Text style={styles.saveButtonText}>Save Note</Text>
-            </TouchableOpacity>
-
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, padding: 16,
-        backgroundColor: '#fff'
+        flex: 1,
+        padding: 16,
+        backgroundColor: '#fff',
     },
     input: {
         fontFamily: 'Roboto',
-        fontSize: 24,
+        fontSize: 20,
         color: '#333',
         fontWeight: 'bold',
         backgroundColor: 'transparent',
@@ -68,14 +80,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         marginBottom: 5,
     },
-    saveButton: {
-        backgroundColor: '#4CAF50',
-        padding: 10,
-        borderRadius: 6,
-        alignItems: 'center',
-    },
     saveButtonText: {
-        color: '#fff',
+        fontFamily: 'Roboto',
+        color: '#4CAF50',
+        fontSize: 16,
         fontWeight: 'bold',
     },
 });

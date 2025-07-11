@@ -5,7 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import AddNoteScreen from './screens/AddNoteScreen';
 import NoteDetailsScreen from './screens/NoteDetailsScreen';
-
+import { Text, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 const Stack = createNativeStackNavigator();
 
 
