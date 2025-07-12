@@ -22,16 +22,16 @@ export default function AddNoteScreen({ navigation }) {
         }
 
         try {
-            const newNote = { id: uuid.v4(), title: title.trim(), description: description.trim() };
+            const newNote = { id: uuid.v4(), title: title.trim(), description: description.trim(), createdAt: new Date().toISOString() };
             const existing = await AsyncStorage.getItem('notes');
             const notes = existing ? JSON.parse(existing) : [];
+            console.log('newNote', newNote);
             notes.push(newNote);
             await AsyncStorage.setItem('notes', JSON.stringify(notes));
             showToast('success', 'Saved!', 'Your note has been saved successfully.');
             navigation.goBack();
         } catch (error) {
-            console.error('Saving note failed:', error);
-            Alert.alert('Error', 'Failed to save the note.');
+            showToast('error', 'Failed!', 'Failed to save the note.');
         }
     }, [title, description]);
 

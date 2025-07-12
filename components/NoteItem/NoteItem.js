@@ -44,6 +44,7 @@ export default function NoteItem({ notes, setNotes, setModalVisible, isSelection
                             <View>
                                 <Text style={styles.title}>{item.title}</Text>
                                 <Text numberOfLines={2}>{item.description}</Text>
+                                <Text style={styles.date}>{new Date(item.createdAt).toLocaleDateString()}</Text>
                             </View>
                             {isSelectionMode && (
                                 <BouncyCheckbox
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 12,
-        paddingVertical: 16,
+        paddingVertical: 12,
         borderRadius: 4,
     },
     title: {
@@ -149,6 +150,11 @@ const styles = StyleSheet.create({
         color: '#999',
         fontSize: 16,
         fontStyle: 'italic',
+    },
+    date: {
+        color: '#666',
+        fontSize: 12,
+        marginTop: 10,
     },
 
 
