@@ -1,96 +1,120 @@
-import React, { useState, useLayoutEffect, useCallback } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import {
     View,
-    TextInput,
     StyleSheet,
+    TextInput,
     TouchableOpacity,
     Text,
+    ScrollView,
+    KeyboardAvoidingView,
+    Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
-import { showToast } from '../utils/showToast';
+import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
+import { showToast } from '../utils/showToast'; // optional
 
 export default function AddNoteScreen({ navigation }) {
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+    const richText = useRef();
 
-    // Memoized save function to avoid recreating on every render
-    const saveNote = useCallback(async () => {
-        if (!title.trim() || !description.trim()) {
-            showToast('error', 'Empty!', 'Please enter a title and description to save.');
+    const saveNote = async () => {
+        const htmlContent = await richText.current?.getContentHtml();
+
+        if (!title.trim() || !htmlContent.trim()) {
+            showToast('error', 'Missing fields', 'Please enter both title and note.');
             return;
         }
 
-        try {
-            const newNote = { id: uuid.v4(), title: title.trim(), description: description.trim(), createdAt: new Date().toISOString() };
-            const existing = await AsyncStorage.getItem('notes');
-            const notes = existing ? JSON.parse(existing) : [];
-            console.log('newNote', newNote);
-            notes.push(newNote);
-            await AsyncStorage.setItem('notes', JSON.stringify(notes));
-            showToast('success', 'Saved!', 'Your note has been saved successfully.');
-            navigation.goBack();
-        } catch (error) {
-            showToast('error', 'Failed!', 'Failed to save the note.');
-        }
-    }, [title, description]);
+        const newNote = {
+            id: uuid.v4(),
+            title: title.trim(),
+            description: htmlContent, // HTML content
+        };
 
-    // Header Save button
+        const existing = await AsyncStorage.getItem('notes');
+        const notes = existing ? JSON.parse(existing) : [];
+        notes.push(newNote);
+        await AsyncStorage.setItem('notes', JSON.stringify(notes));
+        showToast('success', 'Note Saved', 'Your note was saved successfully.');
+        navigation.goBack();
+    };
+
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity onPress={saveNote} style={styles.headerButton}>
-                    <Text style={styles.saveButtonText}>Save</Text>
+                <TouchableOpacity onPress={saveNote} style={{ marginRight: 16 }}>
+                    <Text style={styles.headerSaveText}>Save</Text>
                 </TouchableOpacity>
             ),
         });
-    }, [navigation, saveNote]);
+    }, [title]);
 
     return (
-        <View style={styles.container}>
-            <TextInput
-                placeholder="Title"
-                value={title}
-                onChangeText={setTitle}
-                style={styles.input}
-                placeholderTextColor="#aaa"
-            />
-            <TextInput
-                placeholder="Note something down"
-                value={description}
-                onChangeText={setDescription}
-                style={styles.inputContent}
-                placeholderTextColor="#aaa"
-                multiline
-            />
-        </View>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <ScrollView contentContainerStyle={styles.container}>
+                <TextInput
+                    placeholder="Title"
+                    style={styles.titleInput}
+                    value={title}
+                    onChangeText={setTitle}
+                />
+
+                <RichEditor
+                    ref={richText}
+                    placeholder="Write your note here..."
+                    style={styles.richEditor}
+                    initialHeight={200}
+                />
+
+                <RichToolbar
+                    editor={richText}
+                    actions={[
+                        actions.setBold,
+                        actions.setItalic,
+                        actions.setUnderline,
+                        actions.insertBulletsList,
+                        actions.insertOrderedList,
+                        actions.insertLink,
+                        actions.setStrikethrough,
+                    ]}
+                    style={styles.richToolbar}
+                />
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         padding: 16,
         backgroundColor: '#fff',
     },
-    input: {
+    titleInput: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
         marginBottom: 12,
+        borderBottomWidth: 1,
+        borderColor: '#ccc',
+        paddingVertical: 8,
     },
-    inputContent: {
-        fontSize: 16,
-        color: '#333',
-        flex: 1,
-        textAlignVertical: 'top',
+    richEditor: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 6,
+        padding: 10,
     },
-    saveButtonText: {
+    richToolbar: {
+        marginTop: 10,
+        backgroundColor: '#f2f2f2',
+        borderRadius: 6,
+    },
+    headerSaveText: {
         color: '#4CAF50',
-        fontSize: 16,
         fontWeight: 'bold',
-    },
-    headerButton: {
-        marginRight: 16,
+        fontSize: 16,
     },
 });
