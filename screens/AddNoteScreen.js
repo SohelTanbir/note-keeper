@@ -1,45 +1,50 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useCallback } from 'react';
 import {
     View,
     TextInput,
     StyleSheet,
     TouchableOpacity,
     Text,
-    Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
+import { showToast } from '../utils/showToast';
 
 export default function AddNoteScreen({ navigation }) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
-    const saveNote = async () => {
-        if (!title || !description) {
-            Alert.alert('Please fill in both fields.');
+    // Memoized save function to avoid recreating on every render
+    const saveNote = useCallback(async () => {
+        if (!title.trim() || !description.trim()) {
+            showToast('error', 'Empty!', 'Please enter a title and description to save.');
             return;
         }
+
         try {
-            const newNote = { id: uuid.v4(), title, description };
+            const newNote = { id: uuid.v4(), title: title.trim(), description: description.trim() };
             const existing = await AsyncStorage.getItem('notes');
             const notes = existing ? JSON.parse(existing) : [];
             notes.push(newNote);
             await AsyncStorage.setItem('notes', JSON.stringify(notes));
+            showToast('success', 'Saved!', 'Your note has been saved successfully.');
             navigation.goBack();
-        } catch (err) {
-            console.error('Saving note failed', err);
+        } catch (error) {
+            console.error('Saving note failed:', error);
+            Alert.alert('Error', 'Failed to save the note.');
         }
-    };
+    }, [title, description]);
 
+    // Header Save button
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity onPress={saveNote}>
+                <TouchableOpacity onPress={saveNote} style={styles.headerButton}>
                     <Text style={styles.saveButtonText}>Save</Text>
                 </TouchableOpacity>
             ),
         });
-    }, [navigation, title, description]);
+    }, [navigation, saveNote]);
 
     return (
         <View style={styles.container}>
@@ -48,12 +53,14 @@ export default function AddNoteScreen({ navigation }) {
                 value={title}
                 onChangeText={setTitle}
                 style={styles.input}
+                placeholderTextColor="#aaa"
             />
             <TextInput
                 placeholder="Note something down"
                 value={description}
                 onChangeText={setDescription}
                 style={styles.inputContent}
+                placeholderTextColor="#aaa"
                 multiline
             />
         </View>
@@ -67,23 +74,23 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     input: {
-        fontFamily: 'Roboto',
         fontSize: 20,
-        color: '#333',
         fontWeight: 'bold',
-        backgroundColor: 'transparent',
+        color: '#333',
+        marginBottom: 12,
     },
     inputContent: {
-        fontFamily: 'Roboto',
         fontSize: 16,
         color: '#333',
-        backgroundColor: 'transparent',
-        marginBottom: 5,
+        flex: 1,
+        textAlignVertical: 'top',
     },
     saveButtonText: {
-        fontFamily: 'Roboto',
         color: '#4CAF50',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    headerButton: {
+        marginRight: 16,
     },
 });
