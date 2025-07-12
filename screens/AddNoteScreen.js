@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
 import { showToast } from '../utils/showToast'; // optional
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AddNoteScreen({ navigation }) {
     const [title, setTitle] = useState('');
@@ -29,7 +30,8 @@ export default function AddNoteScreen({ navigation }) {
         const newNote = {
             id: uuid.v4(),
             title: title.trim(),
-            description: htmlContent, // HTML content
+            description: htmlContent,
+            createdAt: new Date().toISOString(),
         };
 
         const existing = await AsyncStorage.getItem('notes');
@@ -51,66 +53,61 @@ export default function AddNoteScreen({ navigation }) {
     }, [title]);
 
     return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
-            <ScrollView contentContainerStyle={styles.container}>
-                <TextInput
-                    placeholder="Title"
-                    style={styles.titleInput}
-                    value={title}
-                    onChangeText={setTitle}
-                />
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
+                <ScrollView contentContainerStyle={styles.container}>
+                    <TextInput
+                        placeholder="Title"
+                        style={styles.titleInput}
+                        value={title}
+                        onChangeText={setTitle}
+                    />
 
-                <RichEditor
-                    ref={richText}
-                    placeholder="Write your note here..."
-                    style={styles.richEditor}
-                    initialHeight={200}
-                />
+                    <RichEditor
+                        ref={richText}
+                        placeholder="Write your note here..."
+                        style={styles.richEditor}
+                        initialHeight={200}
+                    />
 
-                <RichToolbar
-                    editor={richText}
-                    actions={[
-                        actions.setBold,
-                        actions.setItalic,
-                        actions.setUnderline,
-                        actions.insertBulletsList,
-                        actions.insertOrderedList,
-                        actions.insertLink,
-                        actions.setStrikethrough,
-                    ]}
-                    style={styles.richToolbar}
-                />
-            </ScrollView>
-        </KeyboardAvoidingView>
+                    <RichToolbar
+                        editor={richText}
+                        actions={[
+                            actions.setBold,
+                            actions.setItalic,
+                            actions.setUnderline,
+                            actions.insertBulletsList,
+                            actions.insertOrderedList,
+                            actions.insertLink,
+                            actions.setStrikethrough,
+                        ]}
+                        style={styles.richToolbar}
+                    />
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
+        flex: 1,
         backgroundColor: '#fff',
     },
     titleInput: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 12,
-        borderBottomWidth: 1,
-        borderColor: '#ccc',
-        paddingVertical: 8,
+        marginLeft: 16,
     },
     richEditor: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 6,
-        padding: 10,
+        flex: 1,
+        padding: 16,
     },
     richToolbar: {
-        marginTop: 10,
         backgroundColor: '#f2f2f2',
-        borderRadius: 6,
     },
     headerSaveText: {
         color: '#4CAF50',

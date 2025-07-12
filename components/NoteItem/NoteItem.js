@@ -1,30 +1,45 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+import React from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    FlatList,
+    useWindowDimensions
+} from 'react-native';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import RenderHTML from 'react-native-render-html';
 
+export default function NoteItem({
+    notes,
+    setNotes,
+    setModalVisible,
+    isSelectionMode,
+    setIsSelectionMode,
+    selectedNotes,
+    setSelectedNotes,
+    cancelSelection,
+    navigation
+}) {
+    const { width } = useWindowDimensions();
 
-export default function NoteItem({ notes, setNotes, setModalVisible, isSelectionMode, setIsSelectionMode, selectedNotes, setSelectedNotes, cancelSelection, navigation }) {
-
-    // Function to toggle selection of notes
     const toggleSelect = (id) => {
         setSelectedNotes((prev) =>
             prev.includes(id) ? prev.filter((n) => n !== id) : [...prev, id]
         );
     };
 
-    // Function to navigate to note details
     const getNoteDetails = (note) => {
         navigation.navigate('NoteDetail', { note });
     };
-
 
     return (
         <View style={{ flex: 1 }}>
             <FlatList
                 data={notes}
-                showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         onLongPress={() => {
@@ -41,11 +56,25 @@ export default function NoteItem({ notes, setNotes, setModalVisible, isSelection
                         style={{ marginVertical: 8 }}
                     >
                         <View style={styles.noteCard}>
-                            <View>
+                            <View style={{ flex: 1 }}>
                                 <Text style={styles.title}>{item.title}</Text>
-                                <Text numberOfLines={2}>{item.description}</Text>
-                                <Text style={styles.date}>{new Date(item.createdAt).toLocaleDateString()}</Text>
+
+                                {/* Render rich HTML content preview */}
+                                <RenderHTML
+                                    contentWidth={width}
+                                    source={{ html: item.description }}
+                                    baseStyle={styles.previewText}
+                                    tagsStyles={{
+                                        p: { fontSize: 14, color: '#333' },
+                                    }}
+                                    ignoredDomTags={['img']}
+                                />
+
+                                <Text style={styles.date}>
+                                    {new Date(item.createdAt).toLocaleDateString()}
+                                </Text>
                             </View>
+
                             {isSelectionMode && (
                                 <BouncyCheckbox
                                     size={24}
@@ -69,7 +98,6 @@ export default function NoteItem({ notes, setNotes, setModalVisible, isSelection
                 }
             />
 
-
             {isSelectionMode && (
                 <View style={styles.actions}>
                     <TouchableOpacity
@@ -77,7 +105,6 @@ export default function NoteItem({ notes, setNotes, setModalVisible, isSelection
                         onPress={() => setModalVisible(true)}
                     >
                         <Text style={styles.deleteButtonText}>
-
                             ({selectedNotes.length} items)
                         </Text>
                         <Icon name="delete" size={25} color="red" />
@@ -92,7 +119,7 @@ export default function NoteItem({ notes, setNotes, setModalVisible, isSelection
                 </View>
             )}
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -107,6 +134,13 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: 'bold',
         marginBottom: 4,
+        fontSize: 16,
+        color: '#000',
+    },
+    previewText: {
+        fontSize: 14,
+        color: '#444',
+        lineHeight: 20,
     },
     checkbox: {
         fontSize: 20,
@@ -117,7 +151,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#f8f8f8',
         width: '100%',
-
     },
     deleteButton: {
         flexDirection: 'row',
@@ -127,7 +160,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         flex: 1,
         marginRight: 10,
-        alignItems: 'center',
     },
     deleteButtonText: {
         fontSize: 16,
@@ -141,7 +173,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         alignItems: 'center',
     },
-
     emptyMessageContainer: {
         marginTop: 40,
         alignItems: 'center',
@@ -156,6 +187,4 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: 10,
     },
-
-
 });
