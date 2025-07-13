@@ -1,23 +1,26 @@
-import React, { useRef, useState, useLayoutEffect } from 'react';
+import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
 import {
     View,
-    StyleSheet,
     TextInput,
+    StyleSheet,
     TouchableOpacity,
     Text,
-    ScrollView,
     KeyboardAvoidingView,
     Platform,
+    Keyboard,
+    ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
-import { showToast } from '../utils/showToast'; // optional
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { showToast } from '../utils/showToast';
 
 export default function AddNoteScreen({ navigation }) {
     const [title, setTitle] = useState('');
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
     const richText = useRef();
+    const TOOLBAR_HEIGHT = 50;
 
     const saveNote = async () => {
         const htmlContent = await richText.current?.getContentHtml();
@@ -52,62 +55,108 @@ export default function AddNoteScreen({ navigation }) {
         });
     }, [title]);
 
+    useEffect(() => {
+        const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
+            setKeyboardHeight(e.endCoordinates.height);
+        });
+        const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardHeight(0);
+        });
+
+        return () => {
+            showSub.remove();
+            hideSub.remove();
+        };
+    }, []);
+
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
             <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 style={{ flex: 1 }}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
-                <ScrollView contentContainerStyle={styles.container}>
+                <View style={styles.container}>
                     <TextInput
                         placeholder="Title"
-                        style={styles.titleInput}
                         value={title}
                         onChangeText={setTitle}
+                        style={styles.titleInput}
                     />
 
-                    <RichEditor
-                        ref={richText}
-                        placeholder="Write your note here..."
-                        style={styles.richEditor}
-                        initialHeight={200}
-                    />
+                    <ScrollView
+                        contentContainerStyle={{
+                            flexGrow: 1,
+                            paddingBottom: keyboardHeight + TOOLBAR_HEIGHT,
+                        }}
+                        keyboardShouldPersistTaps="handled"
+                    >
+                        <RichEditor
+                            ref={richText}
+                            placeholder="Write your note here..."
+                            initialHeight={300}
+                            style={styles.richEditor}
+                        />
+                    </ScrollView>
 
-                    <RichToolbar
-                        editor={richText}
-                        actions={[
-                            actions.setBold,
-                            actions.setItalic,
-                            actions.setUnderline,
-                            actions.insertBulletsList,
-                            actions.insertOrderedList,
-                            actions.insertLink,
-                            actions.setStrikethrough,
+                    <View
+                        style={[
+                            styles.toolbarWrapper,
+                            {
+                                bottom: keyboardHeight,
+                                height: TOOLBAR_HEIGHT,
+                            },
                         ]}
-                        style={styles.richToolbar}
-                    />
-                </ScrollView>
+                    >
+                        <RichToolbar
+                            editor={richText}
+                            actions={[
+                                actions.setBold,
+                                actions.setItalic,
+                                actions.setUnderline,
+                                actions.insertBulletsList,
+                                actions.insertOrderedList,
+                                actions.insertLink,
+                                actions.setStrikethrough,
+
+                            ]}
+                            iconTint="#333"
+                            selectedIconTint="#4CAF50"
+                            style={styles.richToolbar}
+                        />
+                    </View>
+                </View>
             </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    safeArea: {
         flex: 1,
         backgroundColor: '#fff',
+    },
+    container: {
+        flex: 1,
+        padding: 16,
     },
     titleInput: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginLeft: 16,
     },
     richEditor: {
         flex: 1,
-        padding: 16,
+        minHeight: 200,
+    },
+    toolbarWrapper: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        backgroundColor: '#f2f2f2',
+        borderTopWidth: 1,
+        borderTopColor: '#ddd',
     },
     richToolbar: {
-        backgroundColor: '#f2f2f2',
+        height: '100%',
     },
     headerSaveText: {
         color: '#4CAF50',
