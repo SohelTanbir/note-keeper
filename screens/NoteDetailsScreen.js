@@ -1,26 +1,31 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import {
     View,
     TextInput,
     StyleSheet,
-    KeyboardAvoidingView,
-    Platform,
     TouchableOpacity,
     Text,
+    Platform,
+    Keyboard,
+    ScrollView,
+    KeyboardAvoidingView,
     Alert,
 } from 'react-native';
-import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
 import Toast from 'react-native-toast-message';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function NoteDetailsScreen({ route, navigation }) {
     const { note } = route.params;
     const [title, setTitle] = useState(note.title);
-    const [content, setContent] = useState(note.description);
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
     const richText = useRef();
+    const TOOLBAR_HEIGHT = 50;
 
     const updateNote = async () => {
         const htmlContent = await richText.current?.getContentHtml();
+
         if (!title.trim() || !htmlContent.trim()) {
             Toast.show({
                 type: 'error',
@@ -52,85 +57,118 @@ export default function NoteDetailsScreen({ route, navigation }) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
+            title: 'Edit Note',
             headerRight: () => (
                 <TouchableOpacity onPress={updateNote} style={{ marginRight: 16 }}>
                     <Text style={styles.saveText}>Update</Text>
                 </TouchableOpacity>
             ),
         });
-    }, [title, content]);
+    }, [title]);
+
+    useEffect(() => {
+        const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
+            setKeyboardHeight(e.endCoordinates.height);
+        });
+        const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardHeight(0);
+        });
+
+        return () => {
+            showSub.remove();
+            hideSub.remove();
+        };
+    }, []);
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
-            <TextInput
-                style={styles.titleInput}
-                value={title}
-                onChangeText={setTitle}
-                placeholder="Note Title"
-            />
+        <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                style={{ flex: 1 }}
+            >
+                <View style={styles.container}>
+                    <TextInput
+                        placeholder="Title"
+                        value={title}
+                        onChangeText={setTitle}
+                        style={styles.titleInput}
+                    />
 
-            <View style={styles.editorContainer}>
-                <RichToolbar
-                    editor={richText}
-                    actions={[
-                        actions.setBold,
-                        actions.setItalic,
-                        actions.setUnderline,
-                        actions.insertOrderedList,
-                        actions.insertBulletsList,
-                        actions.setStrikethrough,
-                        actions.insertLink,
-                    ]}
-                    selectedIconTint="#4CAF50"
-                    style={styles.richToolbar}
-                />
+                    <ScrollView
+                        contentContainerStyle={{
+                            flexGrow: 1,
+                            paddingBottom: keyboardHeight + TOOLBAR_HEIGHT,
+                        }}
+                        keyboardShouldPersistTaps="handled"
+                    >
+                        <RichEditor
+                            ref={richText}
+                            initialContentHTML={note.description}
+                            placeholder="Edit your content..."
+                            style={styles.richEditor}
+                            initialHeight={300}
+                        />
+                    </ScrollView>
 
-                <RichEditor
-                    ref={richText}
-                    initialContentHTML={note.description}
-                    onChange={setContent}
-                    placeholder="Edit your content..."
-                    style={styles.richEditor}
-                    initialHeight={250}
-                />
-            </View>
-        </KeyboardAvoidingView>
+                    <View
+                        style={[
+                            styles.toolbarWrapper,
+                            {
+                                bottom: keyboardHeight,
+                                height: TOOLBAR_HEIGHT,
+                            },
+                        ]}
+                    >
+                        <RichToolbar
+                            editor={richText}
+                            actions={[
+                                actions.setBold,
+                                actions.setItalic,
+                                actions.setUnderline,
+                                actions.insertOrderedList,
+                                actions.insertBulletsList,
+                                actions.setStrikethrough,
+                                actions.insertLink,
+                            ]}
+                            iconTint="#333"
+                            selectedIconTint="#4CAF50"
+                            style={styles.richToolbar}
+                        />
+                    </View>
+                </View>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: '#fff',
     },
     titleInput: {
         fontSize: 20,
         fontWeight: 'bold',
-        borderBottomWidth: 1,
-        borderColor: '#ccc',
-        paddingBottom: 8,
         marginBottom: 12,
+        paddingBottom: 8,
         color: '#333',
-    },
-    editorContainer: {
-        flex: 1,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 8,
-        overflow: 'hidden',
-    },
-    richToolbar: {
-        backgroundColor: '#f2f2f2',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
     },
     richEditor: {
         flex: 1,
-        padding: 10,
+        minHeight: 200,
+    },
+    toolbarWrapper: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        backgroundColor: '#f2f2f2',
+    },
+    richToolbar: {
+        height: '100%',
     },
     saveText: {
         color: '#4CAF50',

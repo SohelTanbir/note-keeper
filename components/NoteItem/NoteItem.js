@@ -57,12 +57,12 @@ export default function NoteItem({
                     >
                         <View style={styles.noteCard}>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.title}>{item.title}</Text>
+                                <Text style={styles.title} numberOfLines={1} >{item.title}</Text>
 
                                 {/* Render rich HTML content preview */}
                                 <RenderHTML
                                     contentWidth={width}
-                                    source={{ html: item.description }}
+                                    source={{ html: item.description.length > 100 ? item.description.slice(0, 30) + '...' : item.description }}
                                     baseStyle={styles.previewText}
                                     tagsStyles={{
                                         p: { fontSize: 14, color: '#333' },

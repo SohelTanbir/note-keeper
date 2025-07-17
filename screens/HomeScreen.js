@@ -26,10 +26,21 @@ export default function HomeScreen({ navigation }) {
     useEffect(() => {
         const loadNotes = async () => {
             const json = await AsyncStorage.getItem('notes');
-            setNotes(json ? JSON.parse(json) : []);
+            const loadedNotes = json ? JSON.parse(json) : [];
+
+            // Sort by newest (assuming 'createdAt' or 'updatedAt' is available)
+            const sortedNotes = loadedNotes.sort((a, b) => {
+                const dateA = new Date(b.updatedAt || b.createdAt || 0);
+                const dateB = new Date(a.updatedAt || a.createdAt || 0);
+                return dateA - dateB;
+            });
+
+            setNotes(sortedNotes);
         };
+
         if (isFocused) loadNotes();
     }, [isFocused]);
+
 
     // Function to confirm deletion of selected notes
     const confirmDelete = async () => {
