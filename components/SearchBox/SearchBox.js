@@ -3,7 +3,7 @@ import React from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons';
 
-const SearchBox = ({ value, onChange }) => {
+const SearchBox = ({ value, onChange, onFocus, onBlur }) => {
     return (
         <View style={styles.container}>
             <Feather name="search" size={20} color="#888" style={styles.icon} />
@@ -14,6 +14,8 @@ const SearchBox = ({ value, onChange }) => {
                 style={styles.input}
                 placeholderTextColor="#999"
                 clearButtonMode="always"
+                onFocus={onFocus}
+                onBlur={onBlur}
             />
             {value.length > 0 && (
                 <TouchableOpacity onPress={() => onChange('')}>
@@ -32,7 +34,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f0f0',
         borderRadius: 10,
         paddingHorizontal: 12,
-        paddingVertical: 4,
+        paddingVertical: 2,
         marginBottom: 12,
     },
     icon: {
