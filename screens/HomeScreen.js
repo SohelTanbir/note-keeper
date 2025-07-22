@@ -67,10 +67,13 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']} >
-            <SearchBox value={query} onChange={setQuery} />
+            {notes.length > 0 && (
+                <SearchBox value={query} onChange={setQuery} />
+            )}
             <NoteItem
-                notes={filteredNotes}
+                notes={notes}
                 setNotes={setNotes}
+                filteredNotes={filteredNotes}
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
                 setIsSelectionMode={setIsSelectionMode}

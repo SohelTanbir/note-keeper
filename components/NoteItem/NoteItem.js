@@ -1,102 +1,119 @@
-import React from 'react';
 import {
     View,
     Text,
     StyleSheet,
     TouchableOpacity,
     FlatList,
-    useWindowDimensions
+    useWindowDimensions,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RenderHTML from 'react-native-render-html';
+import EmptyNoteMessage from './EmptyNoteMessage';
+import { useCallback } from 'react';
 
 export default function NoteItem({
     notes,
-    setNotes,
+    filteredNotes,
     setModalVisible,
     isSelectionMode,
     setIsSelectionMode,
     selectedNotes,
     setSelectedNotes,
     cancelSelection,
-    navigation
+    navigation,
 }) {
     const { width } = useWindowDimensions();
 
-    const toggleSelect = (id) => {
-        setSelectedNotes((prev) =>
-            prev.includes(id) ? prev.filter((n) => n !== id) : [...prev, id]
-        );
-    };
+    const toggleSelect = useCallback(
+        (id) => {
+            setSelectedNotes((prev) =>
+                prev.includes(id) ? prev.filter((n) => n !== id) : [...prev, id]
+            );
+        },
+        [setSelectedNotes]
+    );
 
     const getNoteDetails = (note) => {
         navigation.navigate('NoteDetail', { note });
     };
 
-    return (
-        <View style={{ flex: 1 }}>
-            <FlatList
-                data={notes}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        onLongPress={() => {
-                            setIsSelectionMode(true);
-                            setSelectedNotes([item.id]);
-                        }}
-                        onPress={() => {
-                            if (isSelectionMode) {
-                                toggleSelect(item.id);
-                            } else {
-                                getNoteDetails(item);
-                            }
-                        }}
-                        style={{ marginVertical: 8 }}
-                    >
-                        <View style={styles.noteCard}>
-                            <View style={{ flex: 1 }}>
-                                <Text style={styles.title} numberOfLines={1} >{item.title}</Text>
-
-                                {/* Render rich HTML content preview */}
-                                <RenderHTML
-                                    contentWidth={width}
-                                    source={{ html: item.description.length > 100 ? item.description.slice(0, 30) + '...' : item.description }}
-                                    baseStyle={styles.previewText}
-                                    tagsStyles={{
-                                        p: { fontSize: 14, color: '#333' },
-                                    }}
-                                    ignoredDomTags={['img']}
-                                />
-
-                                <Text style={styles.date}>
-                                    {new Date(item.createdAt).toLocaleDateString()}
-                                </Text>
-                            </View>
-
-                            {isSelectionMode && (
-                                <BouncyCheckbox
-                                    size={24}
-                                    iconStyle={{ borderRadius: 6 }}
-                                    fillColor="green"
-                                    unfillColor="#FFFFFF"
-                                    text=""
-                                    isChecked={selectedNotes.includes(item.id)}
-                                    disableBuiltInState
-                                    onPress={() => toggleSelect(item.id)}
-                                    style={{ marginRight: 10 }}
-                                />
-                            )}
-                        </View>
-                    </TouchableOpacity>
-                )}
-                ListEmptyComponent={
-                    <View style={styles.emptyMessageContainer}>
-                        <Text style={styles.emptyMessageText}>No matching notes found.</Text>
-                    </View>
+    const renderItem = useCallback(
+        ({ item }) => (
+            <TouchableOpacity
+                onLongPress={() => {
+                    setIsSelectionMode(true);
+                    setSelectedNotes([item.id]);
+                }}
+                onPress={() =>
+                    isSelectionMode ? toggleSelect(item.id) : getNoteDetails(item)
                 }
-            />
+                style={styles.itemContainer}
+            >
+                <View style={styles.noteCard}>
+                    <View style={styles.noteContent}>
+                        <Text style={styles.title} numberOfLines={1}>
+                            {item.title}
+                        </Text>
+
+                        <RenderHTML
+                            contentWidth={width}
+                            source={{
+                                html:
+                                    item.description.length > 100
+                                        ? `${item.description.slice(0, 30)}...`
+                                        : item.description,
+                            }}
+                            baseStyle={styles.previewText}
+                            tagsStyles={{ p: styles.previewText }}
+                            ignoredDomTags={['img']}
+                        />
+
+                        <Text style={styles.date}>
+                            {new Date(item.createdAt).toLocaleDateString()}
+                        </Text>
+                    </View>
+
+                    {isSelectionMode && (
+                        <BouncyCheckbox
+                            size={24}
+                            iconStyle={styles.checkboxIcon}
+                            fillColor="green"
+                            unfillColor="#fff"
+                            isChecked={selectedNotes.includes(item.id)}
+                            disableBuiltInState
+                            onPress={() => toggleSelect(item.id)}
+                            style={styles.checkbox}
+                        />
+                    )}
+                </View>
+            </TouchableOpacity>
+        ),
+        [isSelectionMode, selectedNotes, toggleSelect]
+    );
+
+    if (notes.length === 0) return <EmptyNoteMessage
+        imageSource={require('../../assets/images/empty-note.png')}
+        title="Add your first note."
+        description={`Relax and write something\nbeautiful`}
+    />;
+
+    return (
+        <View style={styles.container}>
+            {filteredNotes.length !== 0 && (
+                <FlatList
+                    data={filteredNotes}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={renderItem}
+                />
+            )}
+
+            {filteredNotes.length === 0 && <EmptyNoteMessage
+                imageSource={require('../../assets/images/search-empty.png')}
+                title="No results found"
+                description={`Try searching with different\nkeywords.`}
+            />}
 
             {isSelectionMode && (
                 <View style={styles.actions}>
@@ -123,18 +140,26 @@ export default function NoteItem({
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    itemContainer: {
+        marginVertical: 8,
+    },
     noteCard: {
         backgroundColor: '#f0f0f0',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 12,
-        paddingVertical: 12,
+        padding: 12,
         borderRadius: 4,
+    },
+    noteContent: {
+        flex: 1,
     },
     title: {
         fontWeight: 'bold',
-        marginBottom: 4,
         fontSize: 16,
+        marginBottom: 4,
         color: '#000',
     },
     previewText: {
@@ -142,49 +167,54 @@ const styles = StyleSheet.create({
         color: '#444',
         lineHeight: 20,
     },
+    date: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 10,
+    },
+    checkboxIcon: {
+        borderRadius: 6,
+    },
     checkbox: {
-        fontSize: 20,
-        marginRight: 10,
+        marginLeft: 10,
     },
     actions: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: '#f8f8f8',
-        width: '100%',
+        padding: 10,
     },
     deleteButton: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 12,
-        borderRadius: 8,
         flex: 1,
+        padding: 12,
         marginRight: 10,
+        borderRadius: 8,
     },
     deleteButtonText: {
         fontSize: 16,
         color: 'red',
         fontWeight: 'bold',
+        marginRight: 6,
     },
     cancelButton: {
-        padding: 12,
-        borderRadius: 8,
         flex: 1,
+        alignItems: 'center',
+        padding: 12,
         marginLeft: 10,
-        alignItems: 'center',
+        borderRadius: 8,
     },
-    emptyMessageContainer: {
-        marginTop: 40,
+    noResultContainer: {
         alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 40,
     },
-    emptyMessageText: {
+    noResultText: {
+        fontSize: 18,
         color: '#999',
-        fontSize: 16,
-        fontStyle: 'italic',
-    },
-    date: {
-        color: '#666',
-        fontSize: 12,
-        marginTop: 10,
+        fontWeight: '500',
+        textAlign: 'center',
     },
 });
