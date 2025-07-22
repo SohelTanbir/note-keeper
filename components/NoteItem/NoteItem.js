@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import RenderHTML from 'react-native-render-html';
 import EmptyNoteMessage from './EmptyNoteMessage';
 import { useCallback } from 'react';
+import { colors } from '../../utils/colors';
 
 export default function NoteItem({
     notes,
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
         marginVertical: 8,
     },
     noteCard: {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: colors.bgColor,
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 12,
@@ -177,6 +178,7 @@ const styles = StyleSheet.create({
     },
     checkbox: {
         marginLeft: 10,
+        justifyContent: 'center',
     },
     actions: {
         flexDirection: 'row',
