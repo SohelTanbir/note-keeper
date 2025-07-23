@@ -1,5 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useEffect } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
+SplashScreen.preventAutoHideAsync(); // Keep splash screen visible
 
 import HomeScreen from './screens/HomeScreen';
 import AddNoteScreen from './screens/AddNoteScreen';
@@ -8,6 +11,16 @@ const Stack = createNativeStackNavigator();
 import Toast from 'react-native-toast-message';
 
 export default function App() {
+
+  useEffect(() => {
+    const prepare = async () => {
+      // Preload fonts, data, or do any startup logic here
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate loading
+      await SplashScreen.hideAsync(); // Hide splash screen when ready
+    };
+    prepare();
+  }, []);
+
   return (
     <>
       <NavigationContainer>
