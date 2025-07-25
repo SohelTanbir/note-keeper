@@ -94,7 +94,7 @@ export default function NoteItem({
     );
 
     if (notes.length === 0) return <EmptyNoteMessage
-        imageSource={require('../../assets/images/empty-note.png')}
+        imageSource={require('../../assets/images/empty_note.png')}
         title="Add your first note."
         description={`Relax and write something\nbeautiful`}
     />;
@@ -111,7 +111,7 @@ export default function NoteItem({
             )}
 
             {filteredNotes.length === 0 && <EmptyNoteMessage
-                imageSource={require('../../assets/images/search-empty.png')}
+                imageSource={require('../../assets/images/no_search_result.jpg')}
                 title="No results found"
                 description={`Try searching with different\nkeywords.`}
             />}

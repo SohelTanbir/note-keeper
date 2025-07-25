@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     image: {
-        width: 250,
-        height: 250,
+        width: 200,
+        height: 200,
         resizeMode: 'contain', // or 'cover', depending on your need
         marginBottom: 16, // optional spacing
     },
