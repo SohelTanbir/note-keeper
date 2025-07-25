@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: colors.bgColor,
         borderTopWidth: 1,
-        borderTopColor: colors.primary,
+        borderTopColor: colors.disabled,
     },
     richToolbar: {
         height: '100%',

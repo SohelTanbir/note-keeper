@@ -58,7 +58,7 @@ export default function NoteDetailsScreen({ route, navigation }) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: 'Edit Note',
+            title: 'Details',
             headerRight: () => (
                 <TouchableOpacity onPress={updateNote} style={{ marginRight: 16 }}>
                     <Text style={styles.saveText}>Update</Text>
@@ -165,7 +165,9 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        backgroundColor: colors.bgColor,
+        backgroundColor: colors.primary,
+        borderTopWidth: 1,
+        borderTopColor: colors.disabled,
     },
     richToolbar: {
         height: '100%',

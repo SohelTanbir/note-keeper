@@ -9,13 +9,15 @@ import AddNoteScreen from './screens/AddNoteScreen';
 import NoteDetailsScreen from './screens/NoteDetailsScreen';
 const Stack = createNativeStackNavigator();
 import Toast from 'react-native-toast-message';
+import { StatusBar } from 'react-native';
+import { colors } from './utils/colors';
 
 export default function App() {
 
   useEffect(() => {
     const prepare = async () => {
       // Preload fonts, data, or do any startup logic here
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate loading
+      await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate loading
       await SplashScreen.hideAsync(); // Hide splash screen when ready
     };
     prepare();
@@ -23,6 +25,7 @@ export default function App() {
 
   return (
     <>
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Notes' }} />

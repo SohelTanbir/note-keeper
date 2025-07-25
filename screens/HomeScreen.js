@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     },
     addNoteButtonContainer: {
         position: 'absolute',
-        bottom: 80,
+        bottom: 100,
         right: 10,
         zIndex: 10,
     },
