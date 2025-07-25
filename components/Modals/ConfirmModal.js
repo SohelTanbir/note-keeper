@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native'
+import { colors } from '../../utils/colors';
 
 
 export default function ConfirmActionModal({ modalVisible, setModalVisible, confirmDelete, selectedNotes }) {
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#333',
+        color: colors.textSecondary,
         marginBottom: 5,
     },
     modalSubText: {
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'normal',
         textAlign: 'center',
-        color: '#333',
+        color: colors.textSecondary,
         paddingBottom: 10,
     },
     modalActions: {
@@ -77,20 +78,20 @@ const styles = StyleSheet.create({
         opacity: 1,
     },
     modalConfirmButtonText: {
-        color: 'white',
+        color: colors.white,
         fontWeight: 'bold',
     },
 
     modalCancelButton: {
         marginHorizontal: 5,
-        backgroundColor: 'red',
+        backgroundColor: colors.error,
         paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 10,
         opacity: 1,
     },
     modalCancelButtonText: {
-        color: 'white',
+        color: colors.white,
         fontWeight: 'bold',
     },
 

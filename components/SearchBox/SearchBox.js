@@ -2,24 +2,25 @@
 import React from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons';
+import { colors } from '../../utils/colors';
 
 const SearchBox = ({ value, onChange, onFocus, onBlur }) => {
     return (
         <View style={styles.container}>
-            <Feather name="search" size={20} color="#888" style={styles.icon} />
+            <Feather name="search" size={20} color={colors.textSecondary} style={styles.icon} />
             <TextInput
                 placeholder="Search"
                 value={value}
                 onChangeText={onChange}
                 style={styles.input}
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.textSecondary}
                 clearButtonMode="always"
                 onFocus={onFocus}
                 onBlur={onBlur}
             />
             {value.length > 0 && (
                 <TouchableOpacity onPress={() => onChange('')}>
-                    <Ionicons name="close-circle" size={25} color="#999" />
+                    <Ionicons name="close-circle" size={25} color={colors.textSecondary} />
                 </TouchableOpacity>
             )}
         </View>
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0',
+        backgroundColor: colors.bgColor,
         borderRadius: 10,
         paddingHorizontal: 12,
         paddingVertical: 2,
@@ -43,6 +44,6 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         fontSize: 16,
-        color: '#333',
+        color: colors.textSecondary,
     },
 });

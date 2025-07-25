@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
 import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { colors } from '../utils/colors';
 
 export default function NoteDetailsScreen({ route, navigation }) {
     const { note } = route.params;
@@ -128,10 +129,9 @@ export default function NoteDetailsScreen({ route, navigation }) {
                                 actions.insertOrderedList,
                                 actions.insertBulletsList,
                                 actions.setStrikethrough,
-                                actions.insertLink,
                             ]}
-                            iconTint="#333"
-                            selectedIconTint="#4CAF50"
+                            iconTint={colors.textSecondary}
+                            selectedIconTint={colors.primary}
                             style={styles.richToolbar}
                         />
                     </View>
@@ -144,7 +144,7 @@ export default function NoteDetailsScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     container: {
         flex: 1,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 12,
         paddingBottom: 8,
-        color: '#333',
+        color: colors.textSecondary,
     },
     richEditor: {
         flex: 1,
@@ -165,13 +165,13 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        backgroundColor: '#f2f2f2',
+        backgroundColor: colors.bgColor,
     },
     richToolbar: {
         height: '100%',
     },
     saveText: {
-        color: '#4CAF50',
+        color: colors.primary,
         fontWeight: 'bold',
         fontSize: 16,
     },

@@ -15,6 +15,7 @@ import uuid from 'react-native-uuid';
 import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { showToast } from '../utils/showToast';
+import { colors } from '../utils/colors';
 
 export default function AddNoteScreen({ navigation }) {
     const [title, setTitle] = useState('');
@@ -115,12 +116,11 @@ export default function AddNoteScreen({ navigation }) {
                                 actions.setUnderline,
                                 actions.insertBulletsList,
                                 actions.insertOrderedList,
-                                actions.insertLink,
                                 actions.setStrikethrough,
 
                             ]}
-                            iconTint="#333"
-                            selectedIconTint="#4CAF50"
+                            iconTint={colors.textSecondary}
+                            selectedIconTint={colors.primary}
                             style={styles.richToolbar}
                         />
                     </View>
@@ -133,7 +133,7 @@ export default function AddNoteScreen({ navigation }) {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     container: {
         flex: 1,
@@ -151,15 +151,15 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        backgroundColor: '#f2f2f2',
+        backgroundColor: colors.bgColor,
         borderTopWidth: 1,
-        borderTopColor: '#ddd',
+        borderTopColor: colors.primary,
     },
     richToolbar: {
         height: '100%',
     },
     headerSaveText: {
-        color: '#4CAF50',
+        color: colors.primary,
         fontWeight: 'bold',
         fontSize: 16,
     },

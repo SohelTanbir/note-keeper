@@ -80,8 +80,8 @@ export default function NoteItem({
                             <BouncyCheckbox
                                 size={24}
                                 iconStyle={styles.checkboxIcon}
-                                fillColor="green"
-                                unfillColor="#fff"
+                                fillColor={colors.primary}
+                                unfillColor={colors.white}
                                 isChecked={selectedNotes.includes(item.id)}
                                 disableBuiltInState
                                 onPress={() => toggleSelect(item.id)}
@@ -127,7 +127,7 @@ export default function NoteItem({
                         <Text style={styles.deleteButtonText}>
                             ({selectedNotes.length} items)
                         </Text>
-                        <Icon name="delete" size={25} color="red" />
+                        <Icon name="delete" size={25} color={colors.error} />
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -165,16 +165,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         marginBottom: 4,
-        color: '#000',
+        color: colors.black,
     },
     previewText: {
         fontSize: 14,
-        color: '#444',
+        color: colors.textSecondary,
         lineHeight: 20,
     },
     date: {
         fontSize: 12,
-        color: '#666',
+        color: colors.textSecondary,
         marginTop: 10,
     },
     checkboxIcon: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
         height: 40,
         marginLeft: 10,
         borderRadius: 20,
-        backgroundColor: '#f0f0f0',
+        backgroundColor: colors.bgColor,
     },
     checkbox: {
         marginLeft: 10,
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     actions: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#f8f8f8',
+        backgroundColor: colors.bgColor,
         padding: 10,
     },
     deleteButton: {
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     },
     deleteButtonText: {
         fontSize: 16,
-        color: 'red',
+        color: colors.error,
         fontWeight: 'bold',
         marginRight: 6,
     },
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     },
     noResultText: {
         fontSize: 18,
-        color: '#999',
+        color: colors.textSecondary,
         fontWeight: '500',
         textAlign: 'center',
     },

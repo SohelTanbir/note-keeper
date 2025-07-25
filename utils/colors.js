@@ -5,6 +5,8 @@ export const colors = {
     disabled: '#CBCBCB',
     white: '#FFFFFF',
     black: '#000000',
-    bgColor: '#f0f0f0'
+    bgColor: '#f0f0f0',
+    textSecondary: '#333333',
+
 
 };
