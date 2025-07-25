@@ -20,7 +20,7 @@ export default function ConfirmActionModal({ modalVisible, setModalVisible, conf
                             onPress={confirmDelete}
                             disabled={selectedNotes.length === 0}
                         >
-                            <Text style={styles.modalConfirmButtonText}>Delete</Text>
+                            <Text style={styles.modalConfirmButtonText}>Confirm</Text>
                         </TouchableOpacity>
 
                     </View>
@@ -33,9 +33,11 @@ export default function ConfirmActionModal({ modalVisible, setModalVisible, conf
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        backgroundColor: 'rgba(0,0,0,0.2)',
         justifyContent: 'center',
         alignItems: 'center',
+        zIndex: 1000,
     },
     modalBox: {
         backgroundColor: 'white',
@@ -60,8 +62,9 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     modalActions: {
+        display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         gap: 10,
         width: '100%',
     },

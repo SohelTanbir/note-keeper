@@ -11,6 +11,7 @@ import ConfirmActionModal from '../components/Modals/ConfirmModal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBox from '../components/SearchBox/SearchBox';
 import NoteItem from '../components/NoteItem/NoteItem';
+import { colors } from '../utils/colors';
 
 
 
@@ -66,23 +67,37 @@ export default function HomeScreen({ navigation }) {
     );
 
     return (
-        <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']} >
-            {notes.length > 0 && (
-                <SearchBox value={query} onChange={setQuery} />
-            )}
-            <NoteItem
-                notes={notes}
-                setNotes={setNotes}
-                filteredNotes={filteredNotes}
-                modalVisible={modalVisible}
-                setModalVisible={setModalVisible}
-                setIsSelectionMode={setIsSelectionMode}
-                isSelectionMode={isSelectionMode}
-                selectedNotes={selectedNotes}
-                setSelectedNotes={setSelectedNotes}
-                cancelSelection={cancelSelection}
-                navigation={navigation}
-            />
+        <>
+            <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']} >
+                {notes.length > 0 && (
+                    <SearchBox value={query} onChange={setQuery} />
+                )}
+                <NoteItem
+                    notes={notes}
+                    setNotes={setNotes}
+                    filteredNotes={filteredNotes}
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                    setIsSelectionMode={setIsSelectionMode}
+                    isSelectionMode={isSelectionMode}
+                    selectedNotes={selectedNotes}
+                    setSelectedNotes={setSelectedNotes}
+                    cancelSelection={cancelSelection}
+                    navigation={navigation}
+                />
+
+
+                <View style={styles.addNoteButtonContainer}>
+                    <TouchableOpacity
+                        style={styles.addNoteButton}
+                        onPress={() => navigation.navigate('AddNote')}
+                    >
+                        <Icon name="add" size={30} color={colors.primary} />
+                    </TouchableOpacity>
+                </View>
+
+
+            </SafeAreaView>
 
             <ConfirmActionModal
                 modalVisible={modalVisible}
@@ -90,16 +105,7 @@ export default function HomeScreen({ navigation }) {
                 confirmDelete={confirmDelete}
                 selectedNotes={selectedNotes}
             />
-
-            <View style={styles.addNoteButtonContainer}>
-                <TouchableOpacity style={styles.addNoteButton}>
-                    <Icon name="add-circle" size={50} color="#4CAF50"
-                        onPress={() => navigation.navigate('AddNote')}
-                    />
-                </TouchableOpacity>
-            </View>
-
-        </SafeAreaView>
+        </>
     );
 }
 
@@ -107,12 +113,29 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
     },
     addNoteButtonContainer: {
         position: 'absolute',
         bottom: 80,
         right: 10,
         zIndex: 10,
+    },
+    addNoteButton: {
+        backgroundColor: colors.white,
+        borderRadius: 30,
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        // iOS shadow
+        shadowColor: colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        // Android shadow
+        elevation: 5,
     },
 });
