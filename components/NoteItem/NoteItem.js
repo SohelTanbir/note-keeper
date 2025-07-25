@@ -75,18 +75,20 @@ export default function NoteItem({
                         </Text>
                     </View>
 
-                    {isSelectionMode && (
-                        <BouncyCheckbox
-                            size={24}
-                            iconStyle={styles.checkboxIcon}
-                            fillColor="green"
-                            unfillColor="#fff"
-                            isChecked={selectedNotes.includes(item.id)}
-                            disableBuiltInState
-                            onPress={() => toggleSelect(item.id)}
-                            style={styles.checkbox}
-                        />
-                    )}
+                    <View styles={styles.checkboxContainer}>
+                        {isSelectionMode && (
+                            <BouncyCheckbox
+                                size={24}
+                                iconStyle={styles.checkboxIcon}
+                                fillColor="green"
+                                unfillColor="#fff"
+                                isChecked={selectedNotes.includes(item.id)}
+                                disableBuiltInState
+                                onPress={() => toggleSelect(item.id)}
+                                style={styles.checkbox}
+                            />
+                        )}
+                    </View>
                 </View>
             </TouchableOpacity>
         ),
@@ -148,9 +150,11 @@ const styles = StyleSheet.create({
         marginVertical: 8,
     },
     noteCard: {
+        display: 'flex',
         backgroundColor: colors.bgColor,
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 12,
         borderRadius: 4,
     },
@@ -175,6 +179,16 @@ const styles = StyleSheet.create({
     },
     checkboxIcon: {
         borderRadius: 6,
+    },
+    checkboxContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 40,
+        height: 40,
+        marginLeft: 10,
+        borderRadius: 20,
+        backgroundColor: '#f0f0f0',
     },
     checkbox: {
         marginLeft: 10,
