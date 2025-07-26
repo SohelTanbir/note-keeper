@@ -28,14 +28,14 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.NoteKeeper"
+      "package": "com.anonymous.Keepit"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "d3c1a59e-7ca9-4de1-8e92-7ddc88db2ebb"
+        "projectId": "4a420155-e0d5-4f33-8962-97221cb45dfc"
       }
     }
   }
