@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Note Keeper",
-    "slug": "NoteKeeper",
+    "name": "Keepit",
+    "slug": "Keepit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,7 +17,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.NoteKeeper",
+      "bundleIdentifier": "com.anonymous.Keepit",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
